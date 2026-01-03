@@ -68,7 +68,7 @@ No validation
 Easy to send bad or missing data
 Not scalable when fields grow
 """
-@app.post('/create_book')
+@app.post('/books/create_book')
 async def create_book(title : str , author : str , category : str):
     if any(book['title'] == title and book['author']== author for book in BOOKS) :
         return {"message":"book already exists"}
@@ -81,6 +81,20 @@ recommended way , along with pydantic
 
 """
 
-@app.post('/create_new_book')
+@app.post('/books/create_new_book')
 async def create_new_book(new_book = Body()):
     BOOKS.append(new_book)
+
+
+
+"""
+PUT => update
+has body()
+"""
+
+
+@app.put('/books/update_book')
+async def update_book(updated_book = Body()):
+    for i in range(len(BOOKS)):
+        if BOOKS[i]['title'].casefold() == updated_book['title'].casefold():
+            BOOKS[i] = updated_book
