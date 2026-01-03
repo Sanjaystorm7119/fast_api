@@ -1,0 +1,17 @@
+self : used to refer current object
+used to differentiate between instance var and parameters with same name 
+
+
+super : used to refer parent class
+used to call parent class methods / constructors
+
+
+class Person:
+    def __init__(self,name,age):
+        self.name = name
+        self.age = age
+
+class Student(Person):
+    def __init__(self,name,age,degree):
+        super().__init__(name=name,age=age)
+        self.degree= degree
