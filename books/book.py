@@ -1,11 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI , Body
+from typing import Optional
 
 app = FastAPI()
 
 BOOKS = [
-    {"title" : "one" , "author" : "jay", "category" : "action"},
+    {"title" : "one" , "author" : "san", "category" : "action"},
     {"title" : "two" , "author" : "san","category" : "action"},
-    {"title" : "three" , "author" : "ron","category" : "thriller"}
+    {"title" : "three" , "author" : "san","category" : "thriller"}
     ]
 
 
@@ -22,7 +23,7 @@ async def get_books():
 path parameters
 """
 @app.get('/books/{book_title}')
-async def get_books(book_title : str):
+async def get_books_by_title(book_title : str):
     for book in BOOKS:
         if book['title'].casefold() == book_title.casefold():
             return book
@@ -31,7 +32,7 @@ async def get_books(book_title : str):
 query parameter : /? , for filtering data 
 """
 @app.get('/books/')
-async def get_books_by_category(category : str):
+async def get_books_by_category(category : Optional[str] = 'action'):
     books_to_return = []
     for book in BOOKS:
         if book['category'].casefold() == category.casefold():
@@ -43,11 +44,27 @@ async def get_books_by_category(category : str):
 path param + query param
 """
 @app.get('/books/{book_author}/')
-async def get_books(book_author : str, category : str):
+async def get_books_by_author(book_author : str, category :  Optional[str] = None):
     books_to_return = []
     for book in BOOKS:
-        if book['author'].casefold() == book_author.casefold() and book['category'].casefold() == category.casefold():
-            books_to_return.append(book)
+        if book['author'].casefold() == book_author.casefold() :
+            if category is None or book["category"].casefold() == category.casefold():
+                books_to_return.append(book)
+            
     return books_to_return
 
 
+
+"""
+POST => create
+"""
+
+@app.post('/create_book')
+async def create_new_book(title : str , author : str , category : str):
+    if any(book['title'] == title and book['author']== author for book in BOOKS) :
+        return {"message":"book already exists"}
+    BOOKS.append({"title" : title , "author": author , "category" : category})
+    return {"message" : "book added"}
+
+
+@app.post('/create_new_book')
