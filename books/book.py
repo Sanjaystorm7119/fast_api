@@ -9,7 +9,9 @@ BOOKS = [
     {"title" : "three" , "author" : "san","category" : "thriller"}
     ]
 
-
+"""
+GET cannot have a BODY**
+"""
 @app.get('/books')
 async def get_all_books():
     return BOOKS
@@ -59,12 +61,26 @@ async def get_books_by_author(book_author : str, category :  Optional[str] = Non
 POST => create
 """
 
+"""
+do not use this style for post , looks like get 
+POST requests should not rely on query params for data
+No validation
+Easy to send bad or missing data
+Not scalable when fields grow
+"""
 @app.post('/create_book')
-async def create_new_book(title : str , author : str , category : str):
+async def create_book(title : str , author : str , category : str):
     if any(book['title'] == title and book['author']== author for book in BOOKS) :
         return {"message":"book already exists"}
     BOOKS.append({"title" : title , "author": author , "category" : category})
     return {"message" : "book added"}
 
 
+"""
+recommended way , along with pydantic
+
+"""
+
 @app.post('/create_new_book')
+async def create_new_book(new_book = Body()):
+    BOOKS.append(new_book)
