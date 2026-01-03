@@ -5,13 +5,14 @@ app = FastAPI()
 
 BOOKS = [
     {"title" : "one" , "author" : "san", "category" : "action"},
-    {"title" : "two" , "author" : "san","category" : "action"},
+    {"title" : "two" , "author" : "jay","category" : "action"},
     {"title" : "three" , "author" : "san","category" : "thriller"}
     ]
 
 """
 GET cannot have a BODY**
 """
+
 @app.get('/books')
 async def get_all_books():
     return BOOKS
@@ -107,3 +108,13 @@ async def update_book(book_title : str):
             BOOKS.pop(i)
             break
     return {"message":"deleted"}
+
+
+#test
+@app.get('/books/{author}')
+async def get_books_by_author(author : str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get('author').casefold() == author.casefold():
+            books_to_return.append(book)
+    return books_to_return
