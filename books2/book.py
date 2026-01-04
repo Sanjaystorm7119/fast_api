@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Body , HTTPException, Path , Query
 from typing import Optional
 from pydantic import BaseModel, Field
-
+from starlette import status
 app = FastAPI()
 
 
@@ -45,7 +45,7 @@ BOOKS = [
 ]
 
 
-@app.get('/books')
+@app.get('/books',status_code=status.HTTP_200_OK)
 async def get_all_books():
     return BOOKS
 """
@@ -54,7 +54,7 @@ Query for query Validation
 
 """
     
-@app.get('/books/')
+@app.get('/books/',status_code=status.HTTP_200_OK)
 async def get_book_by_rating(rating : int = Query(gt=0, le=100)):
     books_to_return = []
     for book in BOOKS:
@@ -62,7 +62,7 @@ async def get_book_by_rating(rating : int = Query(gt=0, le=100)):
             books_to_return.append(book)
     return books_to_return
 
-@app.get('/books/by_year')
+@app.get('/books/by_year',status_code=status.HTTP_200_OK)
 async def get_books_by_publish_date(year : int):
     books_to_return = []
     for i,book in enumerate(BOOKS):
@@ -71,16 +71,16 @@ async def get_books_by_publish_date(year : int):
 
     return books_to_return
 
-@app.get('/books/{id}')
+@app.get('/books/{id}',status_code=status.HTTP_200_OK)
 async def get_book_by_id(id : int = Path(gt=0)):
     for book in BOOKS:
         if book.id == id :
             return book
         else :
-            raise HTTPException(status_code=404 , detail="not found")
+            raise HTTPException(status_code=404 , detail="book not found")
     
 
-@app.post('/books/create_book')
+@app.post('/books/create_book',status_code=status.HTTP_201_CREATED)
 async def create_new_book(new_book : Book ):
     for book in BOOKS:
         if int(book.id) == int(new_book.id):
@@ -94,7 +94,7 @@ async def create_new_book(new_book : Book ):
     BOOKS.append(new_book)
     return {"message":"book added", "book_id":new_book.id}
 
-@app.delete('/books/delete_book')
+@app.delete('/books/delete_book',status_code=status.HTTP_200_OK)
 async def delete_book(book_name : str):
     for i,book in enumerate(BOOKS):
         if book.title.casefold() == book_name.casefold():
@@ -103,7 +103,7 @@ async def delete_book(book_name : str):
     return {"message":"book removed"}
 
 
-@app.put('/books/update_book')
+@app.put('/books/update_book',status_code=status.HTTP_204_NO_CONTENT)
 async def update_book(book_request : Book):
     for i,book in enumerate(BOOKS):
         if BOOKS[i].id == book_request.id:
