@@ -46,6 +46,12 @@ BOOKS = [
 async def get_all_books():
     return BOOKS
 
+@app.get('/books/{id}')
+async def get_book_by_id(id : int):
+    for book in BOOKS:
+        if book.id == id :
+            return book
+
 @app.post('/books/create_book')
 async def create_new_book(new_book : Book ):
     for book in BOOKS:
