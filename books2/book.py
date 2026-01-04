@@ -37,6 +37,13 @@ async def create_new_book(new_book : Book = Body()):
     BOOKS.append(new_book)
     return {"message":"book added"}
 
+def find_book_id(book : Book):
+    if len(BOOKS)>0:
+        book.id = BOOKS[-1]['id']+1
+    else :
+        book.id = 1
+    return book
+
 @app.delete('/books/delete_book')
 async def delete_book(book_name : str):
     for i,book in enumerate(BOOKS):
