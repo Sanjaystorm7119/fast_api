@@ -76,6 +76,8 @@ async def get_book_by_id(id : int = Path(gt=0)):
     for book in BOOKS:
         if book.id == id :
             return book
+        else :
+            raise HTTPException(status_code=404 , detail="not found")
     
 
 @app.post('/books/create_book')
@@ -118,3 +120,19 @@ async def delete_book_by_id(id : int= Path(gt=0)):
             BOOKS.pop(i)
             break
     return {"message":"book deleted"}
+
+
+"""
+status codes :
+100 : processing request
+200 : ok (Get)
+201 : created (Post)
+204 : No content (Put)
+300 : redirection
+400 : client error : bad request
+401 : unauthorised
+404 : not found
+422 : unprocessable entity (semantic error in client req)
+500 : server error : internal server error
+
+"""
