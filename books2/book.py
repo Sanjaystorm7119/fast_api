@@ -51,6 +51,15 @@ async def get_book_by_id(id : int):
     for book in BOOKS:
         if book.id == id :
             return book
+        
+@app.get('/books/')
+async def get_book_by_rating(rating : int):
+    books_to_return = []
+    for book in BOOKS:
+        if book.rating == rating :
+            books_to_return.append(book)
+    return books_to_return
+
 
 @app.post('/books/create_book')
 async def create_new_book(new_book : Book ):
@@ -73,3 +82,12 @@ async def delete_book(book_name : str):
             BOOKS.pop(i)
 
     return {"message":"book removed"}
+
+
+@app.put('/books/update_book')
+async def update_book(book_request : Book):
+    for i,book in enumerate(BOOKS):
+        if BOOKS[i].id == book_request.id:
+            BOOKS[i] = book_request
+
+    return {"message":"book updated"}
