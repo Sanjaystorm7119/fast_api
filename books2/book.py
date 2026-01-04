@@ -1,16 +1,30 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body , HTTPException
+from typing import Optional
 from pydantic import BaseModel, Field
 
 app = FastAPI()
 
 
 class Book(BaseModel):
-    id : int = Field(gt=0)
+    id : Optional[int] = Field(None,gt=0,description="ID is not needed on create but has to be more thsn 0 is entered")
     genre : str = Field(min_length=4)
     title : str = Field(min_length=4)
     author : str = Field(min_length=2)
     rating : int = Field(gt=0 , le=5)
     description : str = Field(max_length=100)
+
+##prepopulate post values => model_config => json_schema_extra => example => {}
+    model_config = {
+        "json_schema_extra": {
+            "example" : {
+            "genre" : "suspense",
+            "title" : "a new book",
+            "author" : "janjay",
+            "rating" : 5,
+            "description" : "new book description"
+        }
+        }
+    }
 
     # def __init__(self , id : int , genre : str , title : str, author : str, rating : str, description: str ):
     #     self.id = id
@@ -33,21 +47,23 @@ async def get_all_books():
     return BOOKS
 
 @app.post('/books/create_book')
-async def create_new_book(new_book : Book = Body()):
-    BOOKS.append(new_book)
-    return {"message":"book added"}
+async def create_new_book(new_book : Book ):
+    for book in BOOKS:
+        if int(book.id) == int(new_book.id):
+            raise HTTPException(status_code=400, detail="Book with this id already exists")
 
-def find_book_id(book : Book):
     if len(BOOKS)>0:
-        book.id = BOOKS[-1]['id']+1
+        new_book.id = BOOKS[-1].id+1
     else :
-        book.id = 1
-    return book
+        new_book.id = 1
+
+    BOOKS.append(new_book)
+    return {"message":"book added", "book_id":new_book.id}
 
 @app.delete('/books/delete_book')
 async def delete_book(book_name : str):
     for i,book in enumerate(BOOKS):
-        if book['title'].casefold() == book_name.casefold():
+        if book.title.casefold() == book_name.casefold():
             BOOKS.pop(i)
 
     return {"message":"book removed"}
