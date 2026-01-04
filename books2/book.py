@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body , HTTPException
+from fastapi import FastAPI, Body , HTTPException, Path
 from typing import Optional
 from pydantic import BaseModel, Field
 
@@ -6,12 +6,13 @@ app = FastAPI()
 
 
 class Book(BaseModel):
-    id : Optional[int] = Field(None,gt=0,description="ID is not needed on create but has to be more thsn 0 is entered")
+    id : Optional[int] = Field(None,gt=0,description="ID is not needed on create but has to be more than 0 is entered")
     genre : str = Field(min_length=4)
     title : str = Field(min_length=4)
     author : str = Field(min_length=2)
     rating : int = Field(gt=0 , le=5)
     description : str = Field(max_length=100)
+    published_date : int = Field(ge=1500)
 
 ##prepopulate post values => model_config => json_schema_extra => example => {}
     model_config = {
@@ -21,7 +22,8 @@ class Book(BaseModel):
             "title" : "a new book",
             "author" : "janjay",
             "rating" : 5,
-            "description" : "new book description"
+            "description" : "new book description",
+            "published_date" : 1999
         }
         }
     }
@@ -35,9 +37,10 @@ class Book(BaseModel):
     #     self.description = description
 
 BOOKS = [
-    Book(id=1,genre="action",title="title one",author="janjay",rating="5",description="random 5 star book"),
-    Book(id=2,genre="action",title="title two",author="janjay",rating="4",description="random 4 star book"),
-    Book(id=3,genre="action",title="title three",author="janjay",rating="3",description="random 3 star book")
+    Book(id=1,genre="action",title="title one",author="janjay",rating="5",description="random 5 star book",published_date=1600),
+    Book(id=2,genre="action",title="title two",author="janjay",rating="4",description="random 4 star book",published_date=1601),
+    Book(id=3,genre="action",title="title three",author="janjay",rating="3",description="random 3 star book",published_date=1602),
+    Book(id=4,genre="action",title="title four",author="janjay",rating="5",description="random 5 star book",published_date=1600)
 
 ]
 
@@ -46,12 +49,7 @@ BOOKS = [
 async def get_all_books():
     return BOOKS
 
-@app.get('/books/{id}')
-async def get_book_by_id(id : int):
-    for book in BOOKS:
-        if book.id == id :
-            return book
-        
+    
 @app.get('/books/')
 async def get_book_by_rating(rating : int):
     books_to_return = []
@@ -60,6 +58,21 @@ async def get_book_by_rating(rating : int):
             books_to_return.append(book)
     return books_to_return
 
+@app.get('/books/by_year')
+async def get_books_by_publish_date(year : int):
+    books_to_return = []
+    for i,book in enumerate(BOOKS):
+        if int(BOOKS[i].published_date) == int(year):
+            books_to_return.append(book)
+
+    return books_to_return
+
+@app.get('/books/{id}')
+async def get_book_by_id(id : int = Path(gt=0)):
+    for book in BOOKS:
+        if book.id == id :
+            return book
+    
 
 @app.post('/books/create_book')
 async def create_new_book(new_book : Book ):
