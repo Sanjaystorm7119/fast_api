@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body , HTTPException, Path
+from fastapi import FastAPI, Body , HTTPException, Path , Query
 from typing import Optional
 from pydantic import BaseModel, Field
 
@@ -48,10 +48,14 @@ BOOKS = [
 @app.get('/books')
 async def get_all_books():
     return BOOKS
+"""
+Path for path validaton
+Query for query Validation
 
+"""
     
 @app.get('/books/')
-async def get_book_by_rating(rating : int):
+async def get_book_by_rating(rating : int = Query(gt=0, le=100)):
     books_to_return = []
     for book in BOOKS:
         if book.rating == rating :
