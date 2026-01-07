@@ -135,3 +135,10 @@ Base	Parent for ORM models
 Model	Represents DB tables
 commit()	Saves changes
 query()	Reads data
+
+
+-------------------------
+
+.mode column / table / box
+can be of : 
+ascii box column csv html insert json line list markdown qbox quote table tabs tcl
