@@ -1,18 +1,31 @@
 from fastapi import FastAPI, APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel , Field , EmailStr
 from models import Users
+
 
 
 # app = FastAPI()  # use router for routing
 router = APIRouter()
-
 class Create_user_request(BaseModel):
-    user_name : str
-    email : str
-    first_name : str
-    last_name : str
+    user_name : str = Field(min_length=2)
+    email : EmailStr
+    first_name : str = Field(min_length=2 , max_length=20)
+    last_name : str = Field(min_length=2 , max_length=20)
     password : str
-    role : str
+    role : str = Field(min_length=4)
+
+    model_config = {
+        "json_schema_extra" :{
+            "example" : {
+                "user_name" : "san",
+                "email" : "asasa@basas.com",
+                "first_name" : "sanj",
+                "last_name" : "ayy",
+                "password" : "random",
+                "role" : "admin"
+            }
+        }
+    }
 
 @router.get('/auth')
 async def get_user():
