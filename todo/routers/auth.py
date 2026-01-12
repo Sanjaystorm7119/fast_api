@@ -1,11 +1,11 @@
-from fastapi import FastAPI, APIRouter , Depends , status
+from fastapi import FastAPI, APIRouter , Depends , status , HTTPException
 from typing import Annotated
 from database import session_local
 from pydantic import BaseModel , Field , EmailStr
 from models import Users
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-
+from fastapi.security import OAuth2PasswordRequestForm
 
 
 
@@ -48,6 +48,17 @@ def get_db():
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
+
+
+
+def authenticate_user(user_name : str , password : str , db : Session):
+    user = db.query(Users).filter(Users.user_name == user_name).first()
+    if not user :
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="not found")
+    if not bcrypt_context.verify(password , user.hashed_pass):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="invalid password")
+    return True
+
 
 
 @router.get('/auth')
@@ -97,3 +108,11 @@ Users(**...) creates a new Users object (likely a SQLAlchemy model)
 """
 hash -> passlib -> context -> cryptcontext
 """
+
+@router.post('/token')
+async def login_for_access_token(form_data : Annotated[OAuth2PasswordRequestForm, Depends()],db: db_dependency):
+    user =  authenticate_user(form_data.username, form_data.password , db)
+    if not user :
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="invalid user / pass")
+    
+    return {f"user_name : {form_data.username} , authentication successful"}

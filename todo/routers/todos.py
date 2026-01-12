@@ -10,6 +10,9 @@ router = APIRouter()
 # router.include_router(auth.router)
 # models.Base.metadata.create_all(bind=engine)
 
+
+
+
 def get_db():
     db = session_local()
     try :
