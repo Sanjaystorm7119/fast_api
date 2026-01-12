@@ -3,6 +3,8 @@ from fastapi import FastAPI , Depends , HTTPException, status , Path
 import models
 from database import engine 
 from routers import auth , todos
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)

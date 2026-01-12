@@ -6,11 +6,17 @@ from models import Users
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
+from jose import jwt
+from datetime import timedelta , datetime , timezone
+from dotenv import load_dotenv
+load_dotenv()
+import os
 
 
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = os.getenv('ALGORITHM')
 
 # app = FastAPI()  # use router for routing
 router = APIRouter()
@@ -35,6 +41,11 @@ class Create_user_request(BaseModel):
         }
     }
 
+class Token(BaseModel):
+    access_token : str
+    token_type : str
+
+
 def get_db():
     db = session_local() #session creator
     try :
@@ -57,9 +68,15 @@ def authenticate_user(user_name : str , password : str , db : Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="not found")
     if not bcrypt_context.verify(password , user.hashed_pass):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="invalid password")
-    return True
+    return user
 
-
+def create_access_token(username: str , userid : int , expires_delta : timedelta):
+    encode = {
+        "sub": username , "id" :userid
+    }
+    expires =  datetime.now(timezone.utc)+expires_delta
+    encode.update({'exp':expires})
+    return jwt.encode(encode,SECRET_KEY,algorithm=ALGORITHM)
 
 @router.get('/auth')
 async def get_user():
@@ -109,10 +126,12 @@ Users(**...) creates a new Users object (likely a SQLAlchemy model)
 hash -> passlib -> context -> cryptcontext
 """
 
-@router.post('/token')
+@router.post('/token', response_model=Token)
 async def login_for_access_token(form_data : Annotated[OAuth2PasswordRequestForm, Depends()],db: db_dependency):
     user =  authenticate_user(form_data.username, form_data.password , db)
     if not user :
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="invalid user / pass")
+    token = create_access_token(user.user_name , user.id, timedelta(minutes=20))
     
-    return {f"user_name : {form_data.username} , authentication successful"}
+    # return {f"user_name : {form_data.username} , authentication successful , token :{token}"}
+    return {"access_token" : token , "token_type":'bearer'}
