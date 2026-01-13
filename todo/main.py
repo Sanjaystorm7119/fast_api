@@ -2,7 +2,7 @@ from fastapi import FastAPI , Depends , HTTPException, status , Path
 # from models import Todos
 import models
 from database import engine 
-from routers import auth , todos
+from routers import auth , todos , admin
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -11,4 +11,6 @@ models.Base.metadata.create_all(bind=engine)
 
 app.include_router(auth.router)
 app.include_router(todos.router)
+app.include_router(admin.router)
+
 
