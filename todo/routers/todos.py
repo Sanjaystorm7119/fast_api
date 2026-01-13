@@ -4,13 +4,12 @@ from database import engine, session_local
 from typing import Annotated
 from sqlalchemy.orm import Session 
 from pydantic import BaseModel, Field
+from .auth import get_current_user
 # from routers import auth
 
 router = APIRouter()
 # router.include_router(auth.router)
 # models.Base.metadata.create_all(bind=engine)
-
-
 
 
 def get_db():
@@ -21,6 +20,7 @@ def get_db():
         db.close()
         
 db_dependency = Annotated[Session, Depends(get_db)]
+user_dependency = Annotated[dict, Depends(get_current_user)]
 
 class Todo_request(BaseModel):
     title : str = Field(min_length=4)
@@ -44,8 +44,11 @@ async def get_todo_by_id(db: db_dependency, todo_id : int = Path(gt=0)):
 
 
 @router.post('/todos', status_code=status.HTTP_201_CREATED)
-async def create_new_todo(db: db_dependency , todo : Todo_request):
-    todo_model = Todos(**todo.model_dump())
+async def create_new_todo(user : user_dependency,db: db_dependency , todo : Todo_request):
+    if user is None :
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
+    
+    todo_model = Todos(**todo.model_dump() , owner_id = user.get('id'))
 
     db.add(todo_model)
     db.commit()
