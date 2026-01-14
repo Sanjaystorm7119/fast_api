@@ -44,7 +44,7 @@ class Create_user_request(BaseModel):
                 "first_name" : "sanj",
                 "last_name" : "ayy",
                 "password" : "random",
-                "role" : "admin"
+                "role" : "user"
             }
         }
     }

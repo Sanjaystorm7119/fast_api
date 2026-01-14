@@ -2,12 +2,24 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import declarative_base
+import os
+from dotenv import load_dotenv
+from urllib.parse import quote_plus 
+load_dotenv()
 
+# SQLALCEMY_DATABASE_URL = 'sqlite:///./todos_app_db.db'
 
-SQLALCEMY_DATABASE_URL = 'sqlite:///./todos_app_db.db'
+raw_password = os.getenv("password")
+password = quote_plus(raw_password)
+SQLALCEMY_DATABASE_URL = f'postgresql://postgres:{password}@localhost/todo_application_database'
 
+# SQLALCEMY_DATABASE_URL = os.getenv("SQLALCEMY_DATABASE_URL")
 
-engine = create_engine(SQLALCEMY_DATABASE_URL, connect_args={'check_same_thread':False})
+# engine = create_engine(SQLALCEMY_DATABASE_URL, connect_args={'check_same_thread':False}) 
+#connect_args={'check_same_thread':False} needed only for sqlite
+
+engine = create_engine(SQLALCEMY_DATABASE_URL)
+
 
 """
 engine = create_engine(SQLALCEMY_DATABASE_URL, connect_args={'check_same_thread': False})

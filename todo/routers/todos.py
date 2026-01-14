@@ -34,14 +34,14 @@ class Todo_request(BaseModel):
 async def read_all(user: user_dependency , db : db_dependency):  
     if user is None :
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
-    return db.query(Todos).filter(Todos.owner_id==user.get('id')).all()
+    return db.query(Todos).filter(Todos.owner_id==user.get('userid')).all()
 
 @router.get("/todo/{todo_id}",status_code=status.HTTP_200_OK)
 async def get_todo_by_id(user : user_dependency,db: db_dependency, todo_id : int = Path(gt=0)):
     if user is None :
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
     
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id==user.get('id')).first()
+    todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id==user.get('userid')).first()
     if todo_model is not None:
         return todo_model
     else :
@@ -53,7 +53,7 @@ async def create_new_todo(user : user_dependency,db: db_dependency , todo : Todo
     if user is None :
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
     
-    todo_model = Todos(**todo.model_dump() , owner_id = user.get('id'))
+    todo_model = Todos(**todo.model_dump() , owner_id = user.get('userid'))
 
     db.add(todo_model)
     db.commit()
@@ -67,7 +67,7 @@ async def update_todo(user : user_dependency,db : db_dependency , todo : Todo_re
     if user is None :
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
     
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == user.get('id')).first()
+    todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == user.get('userid')).first()
     if todo_model is None:
         raise HTTPException(status_code=404 , detail="not found")
     todo_model.title =  todo.title
@@ -86,11 +86,11 @@ async def delete_todo(user : user_dependency ,db : db_dependency ,todo_id : int 
     if user is None :
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
     
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id==user.get('id')).first()
+    todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id==user.get('userid')).first()
     if todo_model is None:
         raise HTTPException(status_code=404 , detail="not found")
     else :
-        db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id==user.get('id')).delete()
+        db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id==user.get('userid')).delete()
 
         db.commit()
         

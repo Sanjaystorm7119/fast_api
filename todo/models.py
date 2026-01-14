@@ -11,7 +11,7 @@ class Users(Base):
     last_name = Column(String)
     hashed_pass = Column(String)
     is_active = Column(Boolean)
-    role = Column(String)
+    role = Column(String, default="user")
 
 
 
