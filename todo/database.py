@@ -7,15 +7,16 @@ from dotenv import load_dotenv
 from urllib.parse import quote_plus 
 load_dotenv()
 
-# SQLALCEMY_DATABASE_URL = 'sqlite:///./todos_app_db.db'
+SQLALCEMY_DATABASE_URL = 'sqlite:///./todos_app_db.db'
 
 raw_password = os.getenv("password")
 password = quote_plus(raw_password)
+
 #POSTGRE
 # SQLALCEMY_DATABASE_URL = f'postgresql://postgres:{password}@localhost/todo_application_database'
 
 #mysql 
-SQLALCEMY_DATABASE_URL = f'mysql+pymysql://root:{password}@localhost/todo_application_database'
+# SQLALCEMY_DATABASE_URL = f'mysql+pymysql://root:{password}@localhost/todo_application_database'
 
 
 # postgresql://username:password@host:port/database_name

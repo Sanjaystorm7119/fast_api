@@ -35,7 +35,7 @@ class Create_user_request(BaseModel):
     last_name : str = Field(min_length=2 , max_length=20)
     password : str
     role : str = Field(min_length=4)
-
+    phone_number : int = Field(ge=5_000_000_000 , le=9999999999)
     model_config = {
         "json_schema_extra" :{
             "example" : {
@@ -44,7 +44,8 @@ class Create_user_request(BaseModel):
                 "first_name" : "sanj",
                 "last_name" : "ayy",
                 "password" : "random",
-                "role" : "user"
+                "role" : "user",
+                "phone_number" : "9876543210"
             }
         }
     }
@@ -118,7 +119,8 @@ def create_user(db : db_dependency,create_user_request : Create_user_request):
             last_name = create_user_request.last_name,
             role = create_user_request.role,
             hashed_pass = bcrypt_context.hash(create_user_request.password),
-            is_active = True
+            is_active = True,
+            phone_number = create_user_request.phone_number
             )
         # return create_user_model
         db.add(create_user_model)
