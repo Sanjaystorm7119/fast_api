@@ -19,8 +19,13 @@ class Users(Base):
 class Todos(Base):
     __tablename__ = 'todos'  #name of table
     id = Column(Integer , primary_key= True , index = True)
-    title = Column(String)
-    description = Column(String)
+    
+    # title = Column(String) #postgre len req for mysql string
+    title = Column(String(500)) 
+    
+    # description = Column(String)#len req for mysql string
+    description = Column(String(500))
+
     priority = Column(Integer)
     complete = Column(Boolean, default=False)
     owner_id = Column(Integer, ForeignKey('users.id'))

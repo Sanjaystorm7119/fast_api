@@ -11,7 +11,15 @@ load_dotenv()
 
 raw_password = os.getenv("password")
 password = quote_plus(raw_password)
-SQLALCEMY_DATABASE_URL = f'postgresql://postgres:{password}@localhost/todo_application_database'
+#POSTGRE
+# SQLALCEMY_DATABASE_URL = f'postgresql://postgres:{password}@localhost/todo_application_database'
+
+#mysql 
+SQLALCEMY_DATABASE_URL = f'mysql+pymysql://root:{password}@localhost/todo_application_database'
+
+
+# postgresql://username:password@host:port/database_name
+
 
 # SQLALCEMY_DATABASE_URL = os.getenv("SQLALCEMY_DATABASE_URL")
 
