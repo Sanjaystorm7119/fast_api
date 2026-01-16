@@ -66,10 +66,6 @@ def test_student_object(default_student):
     assert default_student.is_eligible() , "should be atleast 18"
 
 
-
-
-
-
 class Student_1:
     def __init__(self, first_name : str, last_name:str , major:str ,age : int):
         self.first_name = first_name

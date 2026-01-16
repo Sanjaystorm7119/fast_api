@@ -9,7 +9,7 @@ load_dotenv()
 
 SQLALCEMY_DATABASE_URL = 'sqlite:///./todos_app_db.db'
 
-raw_password = os.getenv("password")
+raw_password = os.getenv("password","")
 password = quote_plus(raw_password)
 
 #POSTGRE

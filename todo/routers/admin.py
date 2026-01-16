@@ -1,6 +1,6 @@
 from fastapi import  Depends , HTTPException, status , Path , APIRouter 
-from models import Todos, Users
-from database import engine, session_local
+from ..models import Todos, Users
+from ..database import engine, session_local
 from typing import Annotated , Optional
 from sqlalchemy.orm import Session 
 from pydantic import BaseModel, Field , EmailStr

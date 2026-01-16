@@ -1,8 +1,8 @@
 from fastapi import FastAPI, APIRouter , Depends , status , HTTPException
 from typing import Annotated
-from database import session_local
+from ..database import session_local
 from pydantic import BaseModel , Field , EmailStr
-from models import Users
+from ..models import Users
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm , OAuth2PasswordBearer 
