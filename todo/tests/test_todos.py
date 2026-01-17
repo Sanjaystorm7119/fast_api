@@ -1,7 +1,7 @@
 from ..routers.todos import get_db, get_current_user
 from fastapi import status
 from ..models import Todos
-from utils import *
+from .utils import *
 from dotenv import load_dotenv
 load_dotenv()
 
