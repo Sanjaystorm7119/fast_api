@@ -36,7 +36,7 @@ async def read_all(user: user_dependency , db : db_dependency):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
     return db.query(Todos).filter(Todos.owner_id==user.get('userid')).all()
 
-@router.get("/todo/{todo_id}",status_code=status.HTTP_200_OK)
+@router.get("/todos/{todo_id}",status_code=status.HTTP_200_OK)
 async def get_todo_by_id(user : user_dependency,db: db_dependency, todo_id : int = Path(gt=0)):
     if user is None :
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
@@ -81,7 +81,7 @@ async def update_todo(user : user_dependency,db : db_dependency , todo : Todo_re
 
 
 
-@router.delete("/delete/{todo_id}",status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/todos/{todo_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo(user : user_dependency ,db : db_dependency ,todo_id : int = Path(gt=0)):
     if user is None :
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not authorised")
