@@ -71,7 +71,6 @@ Define database tables as Python classes.
 Store metadata about all tables.
 """
 
-
 """
 url->engine->session->base class->model table->create db
 """

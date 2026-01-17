@@ -1,0 +1,123 @@
+[1mdiff --git a/alembic_readme.md b/alembic_readme.md[m
+[1mdeleted file mode 100644[m
+[1mindex 239775e..0000000[m
+[1m--- a/alembic_readme.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,28 +0,0 @@[m
+[31m-Alembic :[m
+[31m-[m
+[31m-lightweight datamigration tool when using sqlalchemy[m
+[31m-plan transfer upgrade resourses within databases[m
+[31m-allows to change a sqlalchemy database table after it is created[m
+[31m-[m
+[31m-##sqlalchemy can only create new database tables , it cannot enhance[m
+[31m-[m
+[31m-alembic allows us to add columns to table (enhance it)[m
+[31m-allows to create migration environment[m
+[31m-[m
+[31m-[m
+[31m---------------------------------------------------------[m
+[31m-alembic init <foldername> : inits a new generic env[m
+[31m-alembic revision -m <message> : creates a new revision of env[m
+[31m-alembic upgrade <revision id> : run upgrade migration to our db[m
+[31m-alembic downgrade -1 : run downgrade migration to our db[m
+[31m-[m
+[31m-------------------------------------------------------------[m
+[31m-automatically created when a project is init with alembic[m
+[31m-[m
+[31m-alembic.ini : this is the file alembiclooks for when invoked : contains config info that we are able to change to match our proj [m
+[31m-[m
+[31m-[m
+[31m-alembic directory :[m
+[31m-has all env properties for alembic[m
+[31m-holds all revisions[m
+[31m-where you call migrations to upgrade / downgrade[m
+[1mdiff --git a/todo/tests/test_example.py b/todo/tests/test_example.py[m
+[1mindex dad5437..6c500cf 100644[m
+[1m--- a/todo/tests/test_example.py[m
+[1m+++ b/todo/tests/test_example.py[m
+[36m@@ -1,3 +1,5 @@[m
+[32m+[m[32mimport pytest[m
+[32m+[m
+ def test_equal_or_not():[m
+     assert 2 == 2[m
+     assert 2 != 1[m
+[36m@@ -13,5 +15,77 @@[m [mdef test_is_type():[m
+     assert type(10 is int)[m
+ [m
+ def test_greater_than():[m
+[31m-    assert 5 < 4[m
+[32m+[m[32m    assert 5 > 4[m
+[32m+[m
+[32m+[m[32mdef test_list():[m
+[32m+[m[32m    num_list = [1,2,3,4][m
+[32m+[m[32m    any_list = [False , False, True][m
+[32m+[m[32m    #False, 0, None, "", [], {} : falsy[m
+[32m+[m[32m    assert 1 in num_list[m
+[32m+[m[32m    assert all(num_list)[m
+[32m+[m[32m    assert False in any_list[m
+[32m+[m[32m    assert any(any_list)[m
+[32m+[m
+[32m+[m
+[32m+[m[32m#object test[m
+[32m+[m[32mclass Student:[m
+[32m+[m[32m    def __init__(self, name, age, marks):[m
+[32m+[m[32m        self.name = name[m
+[32m+[m[32m        self.age = age[m
+[32m+[m[32m        self.marks = marks[m
+[32m+[m
+[32m+[m[32m    def is_passed(self):[m
+[32m+[m[32m        return self.marks >= 40[m
+[32m+[m[41m    [m
+[32m+[m[32m    def is_eligible(self):[m
+[32m+[m[32m        return self.age >= 18[m
+[32m+[m
+[32m+[m
+[32m+[m[32m#with fixtures[m[41m [m
+[32m+[m
+[32m+[m[32m@pytest.fixture[m
+[32m+[m[32mdef default_student():[m
+[32m+[m[32m    return Student("Sanjay", 18 , 100)[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# def test_student_object():[m
+[32m+[m[32m#     student = Student("Sanjay", 20, 80)[m
+[32m+[m
+[32m+[m[32m#     assert isinstance(student, Student)[m
+[32m+[m[32m#     assert student.name == "Sanjay" , "should be Sanjay"[m
+[32m+[m[32m#     assert student.is_passed(), "should be greater than or equal to 40"[m
+[32m+[m[32m#     assert student.is_eligible() , "should be atleast 18"[m
+[32m+[m
+[32m+[m[32m#using fixtures[m
+[32m+[m[32mdef test_student_object(default_student):[m
+[32m+[m[32m    # student = Student("Sanjay", 20, 80) # not needed[m[41m [m
+[32m+[m
+[32m+[m[32m    assert isinstance(default_student, Student)[m
+[32m+[m[32m    assert default_student.name == "Sanjay" , "should be Sanjay"[m
+[32m+[m[32m    assert default_student.is_passed(), "should be greater than or equal to 40"[m
+[32m+[m[32m    assert default_student.is_eligible() , "should be atleast 18"[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass Student_1:[m
+[32m+[m[32m    def __init__(self, first_name : str, last_name:str , major:str ,age : int):[m
+[32m+[m[32m        self.first_name = first_name[m
+[32m+[m[32m        self.last_name = last_name[m
+[32m+[m[32m        self.major = major[m
+[32m+[m[32m        self.age = age[m
+[32m+[m
+[32m+[m[32m@pytest.fixture[m
+[32m+[m[32mdef default_student_1():[m
+[32m+[m[32m    return Student_1("sanjay","b","cs",25)[m
+[32m+[m
+[32m+[m[32mdef test_student_1(default_student_1):[m
+[32m+[m[32m    assert default_student_1.first_name == "sanjay","should be Sanjay"[m
+[32m+[m[32m    assert default_student_1.last_name == "b" ,"should be b"[m
+[32m+[m[32m    assert default_student_1.major == "cs","should be cs"[m
+[32m+[m[32m    assert default_student_1.age == 25,"should be 25"[m
+[41m+[m
+[41m+        [m
+ [m
