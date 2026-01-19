@@ -1,5 +1,5 @@
-from .utils import *
-from ..routers.users import get_current_user,get_db
+from tests.utils import *
+from routers.users import get_current_user,get_db
 from fastapi import status
 
 

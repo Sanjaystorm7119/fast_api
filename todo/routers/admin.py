@@ -4,7 +4,7 @@ from ..database import engine, session_local
 from typing import Annotated , Optional
 from sqlalchemy.orm import Session 
 from pydantic import BaseModel, Field 
-from .auth import get_current_user, bcrypt_context
+from ..routers.auth import get_current_user, bcrypt_context
 # from routers import auth
 
 router = APIRouter(

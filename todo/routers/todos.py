@@ -4,10 +4,13 @@ from ..database import engine, session_local
 from typing import Annotated
 from sqlalchemy.orm import Session 
 from pydantic import BaseModel, Field
-from .auth import get_current_user
+from ..routers.auth import get_current_user
 # from routers import auth
 
-router = APIRouter()
+router = APIRouter(
+    prefix='/todos',
+    tags=["todos"]
+)
 # router.include_router(auth.router)
 # models.Base.metadata.create_all(bind=engine)
 

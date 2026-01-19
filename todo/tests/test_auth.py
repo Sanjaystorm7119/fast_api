@@ -1,6 +1,6 @@
-from .utils import *
+from tests.utils import *
 
-from ..routers.auth import get_current_user,get_db, authenticate_user, create_access_token,SECRET_KEY, ALGORITHM
+from routers.auth import get_current_user,get_db, authenticate_user, create_access_token,SECRET_KEY, ALGORITHM
 from jose import jwt
 from datetime import timedelta
 import pytest
@@ -54,6 +54,21 @@ def test_get_current_user():
 
     user = asyncio.run(get_current_user(token=token))
     assert user == {"username": "testuser", "userid": 1, "user_role": "admin"}
+
+
+
+def test_get_current_user_missing():
+    import asyncio
+    from fastapi import HTTPException
+
+    # empty/missing token should raise HTTPException
+    with pytest.raises(HTTPException):
+        asyncio.run(get_current_user(token=""))
+
+    # malformed/invalid token should raise HTTPException
+    with pytest.raises(HTTPException):
+        asyncio.run(get_current_user(token="invalid.token.value"))
+
 
 
 

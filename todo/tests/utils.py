@@ -1,11 +1,11 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from ..database import Base
-from ..main import app
+from database import Base
+from main import app
 from fastapi.testclient import TestClient
-from ..models import Todos , Users
-from ..routers.auth import bcrypt_context
+from models import Todos , Users
+from routers.auth import bcrypt_context
 import pytest
 
 SQLALCHEMY_DATABASE_URL = 'sqlite:///./todos_app_db_test.db'
