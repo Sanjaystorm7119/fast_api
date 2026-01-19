@@ -13,7 +13,7 @@ raw_password = os.getenv("password","")
 password = quote_plus(raw_password)
 
 #POSTGRE
-# SQLALCEMY_DATABASE_URL = f'postgresql://postgres:{password}@localhost/todo_application_database'
+# SQLALCEMY_DATABASE_URL = f'postgresql://postgres:{password}@localhost:port/todo_application_database'
 
 #mysql 
 # SQLALCEMY_DATABASE_URL = f'mysql+pymysql://root:{password}@localhost/todo_application_database'
